@@ -7,10 +7,18 @@ import {
 	Text,
 	TouchableOpacity,
 	View,
+	FlatList,
 } from 'react-native'
-import { WebBrowser } from 'expo'
+import { WebBrowser, Constants } from 'expo'
 
 import { MonoText } from '../components/StyledText'
+import { ExerciseListItem } from '../components/ExerciseListitem'
+
+const ExerciseList = [
+	{ title: '벤치프레스' },
+	{ title: '바벨컬' },
+	{ title: '스쿼트' },
+]
 
 export default class HomeScreen extends React.Component {
 	static navigationOptions = {
@@ -20,7 +28,8 @@ export default class HomeScreen extends React.Component {
 	render() {
 		return (
 			<View style={styles.container}>
-				<ScrollView
+				<View style={styles.statusBar} />
+				{/* <ScrollView
 					style={styles.container}
 					contentContainerStyle={styles.contentContainer}>
 					<View style={styles.welcomeContainer}>
@@ -32,28 +41,38 @@ export default class HomeScreen extends React.Component {
 							}
 							style={styles.welcomeImage}
 						/>
-					</View>
+					</View> */}
 
-					<View style={styles.getStartedContainer}>
-						{this._maybeRenderDevelopmentModeWarning()}
+				<View style={styles.getStartedContainer}>
+					<Text style={styles.titleText}>The GYM RAT</Text>
+					<FlatList
+						style={{ alignSelf: 'stretch', marginHorizontal: 5 }}
+						data={ExerciseList}
+						renderItem={({ item, index }) => (
+							<ExerciseListItem
+								key={index}
+								onPress={() => console.log(`${item.title} click!`)}
+								title={item.title}
+							/>
+						)}
+						keyExtractor={(item, index) => index.toString()}
+					/>
 
-						<Text style={styles.getStartedText}>The GYM RAT</Text>
-
-						{/* <View style={[styles.codeHighlightContainer, styles.homeScreenFilename]}>
+					{/* <View style={[styles.codeHighlightContainer, styles.homeScreenFilename]}>
               <MonoText style={styles.codeHighlightText}>screens/HomeScreen.js</MonoText>
             </View>
 
             <Text style={styles.getStartedText}>
               Change this text and your app will automatically reload.
             </Text> */}
-					</View>
+				</View>
 
-					{/* <View style={styles.helpContainer}>
+				{/* <View style={styles.helpContainer}>
             <TouchableOpacity onPress={this._handleHelpPress} style={styles.helpLink}>
               <Text style={styles.helpLinkText}>Help, it didn’t automatically reload!</Text>
             </TouchableOpacity>
           </View> */}
-				</ScrollView>
+				{/* </ScrollView> */}
 
 				<View style={styles.tabBarInfoContainer}>
 					<Text style={styles.tabBarInfoText}>
@@ -112,6 +131,10 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: '#fff',
 	},
+	statusBar: {
+		backgroundColor: '#4a5c7a',
+		height: Constants.statusBarHeight,
+	},
 	developmentModeText: {
 		marginBottom: 20,
 		color: 'rgba(0,0,0,0.4)',
@@ -136,7 +159,8 @@ const styles = StyleSheet.create({
 	},
 	getStartedContainer: {
 		alignItems: 'center',
-		marginHorizontal: 50,
+		// marginHorizontal: 50,
+		// height: Constants.statusBarHeight,
 	},
 	homeScreenFilename: {
 		marginVertical: 7,
@@ -149,10 +173,10 @@ const styles = StyleSheet.create({
 		borderRadius: 3,
 		paddingHorizontal: 4,
 	},
-	getStartedText: {
-		fontSize: 17,
+	titleText: {
+		fontSize: 40,
 		color: 'rgba(96,100,109, 1)',
-		lineHeight: 24,
+		// lineHeight: 24,
 		textAlign: 'center',
 	},
 	tabBarInfoContainer: {
