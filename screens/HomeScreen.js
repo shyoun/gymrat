@@ -9,8 +9,7 @@ import {
 	View,
 	FlatList,
 } from 'react-native'
-import { WebBrowser, Constants } from 'expo'
-
+import { Constants, Gyroscope } from 'expo'
 import { MonoText } from '../components/StyledText'
 import { ExerciseListItem } from '../components/ExerciseListitem'
 
@@ -21,107 +20,55 @@ const ExerciseList = [
 ]
 
 export default class HomeScreen extends React.Component {
-	static navigationOptions = {
-		header: null,
+	state = {
+		gyroscopeData: {},
+	}
+
+	componentDidMount = () => {
+		this.toggle()
+	}
+
+	componentWillUnmount = () => {
+		this.unsubscribe()
+	}
+
+	toggle = () => {
+		if (this.subscription) {
+			this.unsubscribe()
+			return
+		}
+		this.subscribe()
+	}
+
+	slow = () => {
+		Gyroscope.setUpdateInterval(1000)
+	}
+
+	fast = () => {
+		Gyroscope.setUpdateInterval(16)
+	}
+
+	subscribe = () => {
+		this.subscription = Gyroscope.addListener(result => {
+			this.setState({ gyroscopeData: result })
+		})
+	}
+
+	unsubscribe = () => {
+		this.subscription && this.subscription.remove()
+		this.subscription = null
 	}
 
 	render() {
+		let { x, y, z } = this.state.gyroscopeData
+
 		return (
-			<View style={styles.container}>
-				<View style={styles.statusBar} />
-				{/* <ScrollView
-					style={styles.container}
-					contentContainerStyle={styles.contentContainer}>
-					<View style={styles.welcomeContainer}>
-						<Image
-							source={
-								__DEV__
-									? require('../assets/images/robot-dev.png')
-									: require('../assets/images/robot-prod.png')
-							}
-							style={styles.welcomeImage}
-						/>
-					</View> */}
-
-				<View style={styles.getStartedContainer}>
-					<Text style={styles.titleText}>The GYM RAT</Text>
-					<FlatList
-						style={{ alignSelf: 'stretch', marginHorizontal: 5 }}
-						data={ExerciseList}
-						renderItem={({ item, index }) => (
-							<ExerciseListItem
-								key={index}
-								onPress={() => console.log(`${item.title} click!`)}
-								title={item.title}
-							/>
-						)}
-						keyExtractor={(item, index) => index.toString()}
-					/>
-
-					{/* <View style={[styles.codeHighlightContainer, styles.homeScreenFilename]}>
-              <MonoText style={styles.codeHighlightText}>screens/HomeScreen.js</MonoText>
-            </View>
-
-            <Text style={styles.getStartedText}>
-              Change this text and your app will automatically reload.
-            </Text> */}
-				</View>
-
-				{/* <View style={styles.helpContainer}>
-            <TouchableOpacity onPress={this._handleHelpPress} style={styles.helpLink}>
-              <Text style={styles.helpLinkText}>Help, it didn’t automatically reload!</Text>
-            </TouchableOpacity>
-          </View> */}
-				{/* </ScrollView> */}
-
-				<View style={styles.tabBarInfoContainer}>
-					<Text style={styles.tabBarInfoText}>
-						얘는 무조건 여기에 고정 !!! position:absolute 사용한다.
-					</Text>
-
-					<View
-						style={[styles.codeHighlightContainer, styles.navigationFilename]}>
-						<MonoText style={styles.codeHighlightText}>
-							navigation/MainTabNavigator.js
-						</MonoText>
-					</View>
-				</View>
+			<View style={styles.centeredContainer}>
+				<Text>HomeScreen</Text>
+				<Text>x: {x}</Text>
+				<Text>y: {y}</Text>
+				<Text>z: {z}</Text>
 			</View>
-		)
-	}
-
-	_maybeRenderDevelopmentModeWarning() {
-		if (__DEV__) {
-			const learnMoreButton = (
-				<Text onPress={this._handleLearnMorePress} style={styles.helpLinkText}>
-					Learn more
-				</Text>
-			)
-
-			return (
-				<Text style={styles.developmentModeText}>
-					Development mode is enabled, your app will be slower but you can use
-					useful development tools. {learnMoreButton}
-				</Text>
-			)
-		} else {
-			return (
-				<Text style={styles.developmentModeText}>
-					You are not in development mode, your app will run at full speed.
-				</Text>
-			)
-		}
-	}
-
-	_handleLearnMorePress = () => {
-		WebBrowser.openBrowserAsync(
-			'https://docs.expo.io/versions/latest/guides/development-mode'
-		)
-	}
-
-	_handleHelpPress = () => {
-		WebBrowser.openBrowserAsync(
-			'https://docs.expo.io/versions/latest/guides/up-and-running.html#can-t-see-your-changes'
 		)
 	}
 }
@@ -130,6 +77,11 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: '#fff',
+	},
+	centeredContainer: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
 	},
 	statusBar: {
 		backgroundColor: '#4a5c7a',

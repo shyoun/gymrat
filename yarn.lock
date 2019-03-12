@@ -2655,6 +2655,13 @@ expo-sensors-interface@~2.0.0:
   dependencies:
     expo-core "~2.0.0"
 
+expo-sensors@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/expo-sensors/-/expo-sensors-3.0.1.tgz#5fb1616caf1dc44b4825509b4dbe808694c4934a"
+  integrity sha512-Q9T3SDEjphYH7rNOpwx9kfwDVAPgEeD7fdgluh1zyOHuQ96wzlVLosM7k/K9puEJ4NkpDUTIFUJu2vahrIPqkA==
+  dependencies:
+    invariant "^2.2.4"
+
 expo-sensors@~2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/expo-sensors/-/expo-sensors-2.0.0.tgz#29fa73958192f2ec9d9e51dfd01630db96038bab"
